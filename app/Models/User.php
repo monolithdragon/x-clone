@@ -4,9 +4,9 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
 use MongoDB\Laravel\Auth\User as Authenticatable;
 use MongoDB\Laravel\Relations\BelongsToMany;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -14,6 +14,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $collection = 'users';
+
     protected $connection = 'mongodb';
 
     /**
