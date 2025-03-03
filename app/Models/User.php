@@ -4,7 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use MongoDB\Laravel\Auth\User as Authenticatable;
+use MongoDB\Laravel\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
@@ -12,15 +13,34 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $collection = 'users';
+    protected $connection = 'mongodb';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
+        'username',
+        'fullname',
         'password',
+        'email',
+        'followers',
+        'following',
+        'profileImage',
+        'coverImage',
+        'bio',
+        'link',
+    ];
+
+    protected $attributes = [
+        'followers' => [],
+        'following' => [],
+        'profileImage' => '',
+        'coverImage' => '',
+        'bio' => '',
+        'link' => '',
     ];
 
     /**
@@ -44,5 +64,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function following(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_follower', 'follower_id', 'user_id');
+    }
+
+    public function followers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_follower', 'user_id', 'follower_id');
     }
 }
